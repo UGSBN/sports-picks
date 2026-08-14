@@ -222,7 +222,16 @@
 </head>
 
 <body>
-
+<div id="playerSetup" style="padding:20px;text-align:center;">
+  <h2>Choose your player name</h2>
+  <input
+    id="playerName"
+    type="text"
+    placeholder="Enter a nickname"
+    maxlength="20"
+  >
+  <button onclick="savePlayerName()">Join</button>
+</div>
   <header>
     <h1>🏆 Sports Picks</h1>
     <p>Friends League • Virtual Points Only</p>
@@ -278,6 +287,29 @@
 
   <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1BjDAQp1OOoDAC0PfkjCupgVRJ_w8rxrYpzHw1z1imc1Ytg/exec";
+    function savePlayerName() {
+  const input = document.getElementById("playerName");
+  const name = input.value.trim();
+
+  if (!name) {
+    alert("Please enter a player name.");
+    return;
+  }
+
+  localStorage.setItem("playerName", name);
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "addPlayer",
+      player: name
+    })
+  });
+
+  document.getElementById("playerSetup").style.display = "none";
+
+  alert("Welcome, " + name + "!");
+}
     const games = {
 
       NFL: [
@@ -394,7 +426,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1Bj
     method: "POST",
     body: JSON.stringify({
       action: "pick",
-      player: "You",
+      player: localStorage.getItem("playerName") || "You",
       gameId: gameId,
       pick: team
     })
