@@ -474,7 +474,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1Bj
  const homeScore = game.scores?.home?.total ?? "-";
 const awayScore = game.scores?.away?.total ?? "-";
 
-      const status = game.status?.long || "Scheduled";
+      const status = game.status?.short || game.status?.long || "Scheduled";
 
       const card = document.createElement("div");
       card.className = "score-card";
