@@ -378,21 +378,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1Bj
 
     }
 
-    function pickTeam(button, team) {
+   function pickTeam(button, team) {
+  const parent = button.parentElement.parentElement;
 
-      const parent = button.parentElement.parentElement;
+  parent.querySelectorAll(".pick-btn").forEach(btn => {
+    btn.classList.remove("selected");
+  });
 
-      parent.querySelectorAll(".pick-btn").forEach(btn => {
-        btn.classList.remove("selected");
-      });
+  button.classList.add("selected");
+  button.textContent = "✓ Picked";
 
-      button.classList.add("selected");
+  const gameId = button.closest(".game").querySelector(".game-time").textContent;
 
-      button.textContent = "✓ Picked";
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "pick",
+      player: "You",
+      gameId: gameId,
+      pick: team
+    })
+  });
 
-      alert("You picked " + team + "!");
-
-    }
+  alert("You picked " + team + "!");
+}
 
     renderGames();
 
