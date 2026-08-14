@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Picks</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111936;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #273252;
+    }
+
+    header h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: #aeb8d4;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    .balance {
+      background: linear-gradient(135deg, #17234a, #111936);
+      border: 1px solid #33416d;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .balance-label {
+      color: #aeb8d4;
+      font-size: 14px;
+    }
+
+    .balance-number {
+      font-size: 38px;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .virtual {
+      color: #7f8baa;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .sports {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      overflow-x: auto;
+    }
+
+    .sport-btn {
+      background: #151e3b;
+      color: white;
+      border: 1px solid #303d67;
+      border-radius: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .sport-btn.active {
+      background: #3157d5;
+      border-color: #3157d5;
+    }
+
+    .section-title {
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .game {
+      background: #111936;
+      border: 1px solid #29375f;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .league {
+      color: #7f9cff;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .game-time {
+      color: #929dbb;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .team {
+      flex: 1;
+      text-align: center;
+    }
+
+    .team-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .pick-btn {
+      width: 100%;
+      padding: 11px 5px;
+      border-radius: 9px;
+      border: 1px solid #3a4b7b;
+      background: #192345;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .pick-btn:hover {
+      background: #263665;
+    }
+
+    .pick-btn.selected {
+      background: #3157d5;
+      border-color: #5b79e6;
+    }
+
+    .vs {
+      color: #687493;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .leaderboard {
+      margin-top: 35px;
+      background: #111936;
+      border: 1px solid #29375f;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .leaderboard h2 {
+      padding: 18px;
+      border-bottom: 1px solid #29375f;
+    }
+
+    .player {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 18px;
+      border-bottom: 1px solid #202b4c;
+    }
+
+    .player:last-child {
+      border-bottom: none;
+    }
+
+    .player-name {
+      font-weight: bold;
+    }
+
+    .player-points {
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      color: #687493;
+      font-size: 12px;
+      padding: 35px 15px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 25px;
+      }
+
+      .balance-number {
+        font-size: 32px;
+      }
+
+      .container {
+        padding: 18px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🏆 Sports Picks</h1>
+    <p>Friends League • Virtual Points Only</p>
+  </header>
+
+  <main class="container">
+
+    <div class="balance">
+      <div class="balance-label">YOUR BALANCE</div>
+      <div class="balance-number" id="balance">1,000</div>
+      <div class="virtual">Virtual points — no real money</div>
+    </div>
+
+    <div class="sports">
+      <button class="sport-btn active" onclick="showSport('NFL', this)">🏈 NFL</button>
+      <button class="sport-btn" onclick="showSport('NBA', this)">🏀 NBA</button>
+      <button class="sport-btn" onclick="showSport('MLB', this)">⚾ MLB</button>
+    </div>
+
+    <h2 class="section-title">Upcoming Games</h2>
+
+    <div class="games" id="games"></div>
+
+    <div class="leaderboard">
+      <h2>📊 League Leaderboard</h2>
+
+      <div class="player">
+        <span class="player-name">🥇 You</span>
+        <span class="player-points">1,000 pts</span>
+      </div>
+
+      <div class="player">
+        <span class="player-name">🥈 Alex</span>
+        <span class="player-points">1,000 pts</span>
+      </div>
+
+      <div class="player">
+        <span class="player-name">🥉 Jordan</span>
+        <span class="player-points">1,000 pts</span>
+      </div>
+
+      <div class="player">
+        <span class="player-name">4. Sam</span>
+        <span class="player-points">1,000 pts</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Sports Picks is a private friends game using virtual points only.
+  </footer>
+
+  <script>
+
+    const games = {
+
+      NFL: [
+        {
+          teams: ["Chiefs", "Bills"],
+          time: "Sunday • 1:00 PM"
+        },
+        {
+          teams: ["Packers", "Lions"],
+          time: "Sunday • 4:25 PM"
+        }
+      ],
+
+      NBA: [
+        {
+          teams: ["Lakers", "Celtics"],
+          time: "Tonight • 7:30 PM"
+        },
+        {
+          teams: ["Bulls", "Knicks"],
+          time: "Tonight • 8:00 PM"
+        }
+      ],
+
+      MLB: [
+        {
+          teams: ["Yankees", "Red Sox"],
+          time: "Tonight • 6:40 PM"
+        },
+        {
+          teams: ["Dodgers", "Giants"],
+          time: "Tonight • 9:10 PM"
+        }
+      ]
+
+    };
+
+    let selectedSport = "NFL";
+
+    function showSport(sport, button) {
+
+      selectedSport = sport;
+
+      document.querySelectorAll(".sport-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      renderGames();
+    }
+
+    function renderGames() {
+
+      const gamesContainer = document.getElementById("games");
+
+      gamesContainer.innerHTML = "";
+
+      games[selectedSport].forEach((game, index) => {
+
+        const card = document.createElement("div");
+
+        card.className = "game";
+
+        card.innerHTML = `
+          <div class="league">${selectedSport}</div>
+
+          <div class="game-time">${game.time}</div>
+
+          <div class="teams">
+
+            <div class="team">
+              <div class="team-name">${game.teams[0]}</div>
+              <button
+                class="pick-btn"
+                onclick="pickTeam(this, '${game.teams[0]}')">
+                Pick
+              </button>
+            </div>
+
+            <div class="vs">VS</div>
+
+            <div class="team">
+              <div class="team-name">${game.teams[1]}</div>
+              <button
+                class="pick-btn"
+                onclick="pickTeam(this, '${game.teams[1]}')">
+                Pick
+              </button>
+            </div>
+
+          </div>
+        `;
+
+        gamesContainer.appendChild(card);
+
+      });
+
+    }
+
+    function pickTeam(button, team) {
+
+      const parent = button.parentElement.parentElement;
+
+      parent.querySelectorAll(".pick-btn").forEach(btn => {
+        btn.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+
+      button.textContent = "✓ Picked";
+
+      alert("You picked " + team + "!");
+
+    }
+
+    renderGames();
+
+  </script>
+
+</body>
+</html>
