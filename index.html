@@ -471,8 +471,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1Bj
       const home = game.teams?.home?.name || "Home";
       const away = game.teams?.away?.name || "Away";
 
-      const homeScore = game.scores?.home ?? "-";
-      const awayScore = game.scores?.away ?? "-";
+ const homeScore = game.scores?.home?.total ?? "-";
+const awayScore = game.scores?.away?.total ?? "-";
 
       const status = game.status?.long || "Scheduled";
 
