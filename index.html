@@ -440,7 +440,62 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz0cO00-0pvqj1kSWHNq1Bj
   alert("You picked " + team + "!");
 }
 
-    renderGames();
+  async function loadScores(sport) {
+  const scoreList = document.getElementById("scoreList");
+
+  scoreList.innerHTML = "Loading scores...";
+
+  try {
+    const response = await fetch(
+      API_URL + "?action=scores&sport=" + encodeURIComponent(sport)
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      scoreList.innerHTML = "Unable to load scores.";
+      return;
+    }
+
+    const apiData = JSON.parse(result.response);
+    const games = apiData.response || [];
+
+    if (games.length === 0) {
+      scoreList.innerHTML = "No games found.";
+      return;
+    }
+
+    scoreList.innerHTML = "";
+
+    games.slice(0, 20).forEach(game => {
+      const home = game.teams?.home?.name || "Home";
+      const away = game.teams?.away?.name || "Away";
+
+      const homeScore = game.scores?.home ?? "-";
+      const awayScore = game.scores?.away ?? "-";
+
+      const status = game.status?.long || "Scheduled";
+
+      const card = document.createElement("div");
+      card.className = "score-card";
+
+      card.innerHTML = `
+        <strong>${away} ${awayScore}</strong>
+        <span> @ </span>
+        <strong>${home} ${homeScore}</strong>
+        <div>${status}</div>
+      `;
+
+      scoreList.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error(error);
+    scoreList.innerHTML = "Unable to load scores.";
+  }
+}
+
+renderGames();
 loadScores("NFL");
 </script>
 
